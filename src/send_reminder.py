@@ -42,4 +42,4 @@ if __name__ == "__main__":
             'phone': '0000000000',
             'message': 'A message'
         }
-    send_payment_reminder(payment)
+    send_payment_reminder(payments)
