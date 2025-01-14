@@ -34,7 +34,8 @@ def send_with_wa_link(phone, message):
     pass
 
 def print_message(phone, message):
-    print(f"Phone: {phone}")
+    print("\n")
+    print(f"Phone: {str(phone)}")
     print(f"Message: {message}")
 
 if __name__ == "__main__":

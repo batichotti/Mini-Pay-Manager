@@ -12,6 +12,7 @@ class PaymentManagerApp:
         self.root = root
         self.df = None
         self.file_path_var = tk.StringVar()
+        self.last_messages = {}
 
         self.setup_ui()
 
@@ -37,14 +38,22 @@ class PaymentManagerApp:
         self.file_path_entry.icursor(tk.END)
 
     def load_excel_file(self) -> None:
-        file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+        file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx;*.xls;*.xlsm;*.xlsb;*.csv")])
         if file_path:
             try:
                 self.df = pd.read_excel(file_path)
-                messagebox.showinfo("Sucesso", "Arquivo carregado com sucesso!")
-                self.file_path_var.set(file_path)
-                self.file_path_entry.icursor(tk.END)
-                self.file_path_entry.xview_moveto(1)
+                empty_fields = self.df[self.df.isnull().any(axis=1)]
+                if not empty_fields.empty:
+                    error_message = "A tabela contém campos vazios nas seguintes linhas:\n"
+                    for index in empty_fields.index:
+                        error_message += f"Linha {index + 2}\n"
+                    messagebox.showerror("Erro", error_message)
+                    self.df = None
+                else:
+                    messagebox.showinfo("Sucesso", "Arquivo carregado com sucesso!")
+                    self.file_path_var.set(file_path)
+                    self.file_path_entry.icursor(tk.END)
+                    self.file_path_entry.xview_moveto(1)
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao carregar o arquivo: {e}")
         else:
@@ -54,16 +63,25 @@ class PaymentManagerApp:
         if self.df is not None:
             self.df['Vencimento'] = pd.to_datetime(self.df['Vencimento'], format='%d/%m/%Y')
             self.df = self.df.sort_values(by='Vencimento')
-            grouped = self.df.groupby('Nome')
+            filtered_df = self.df[self.df['Status'] == 'N']
+            grouped = filtered_df.groupby('Nome')
             for name, group in grouped:
                 for index, row in group.iterrows():
-                    next_due_date = group.iloc[index + 1]['Vencimento'] if index + 1 < len(group) else False
-                    message: str = create_message(name=name, amount=float(row['Valor']), due_date=row['Vencimento'], next_due_date=next_due_date)
-                    payment: dict = {'phone': row['Telefone'], 'message': message}
+                    due_date = row['Vencimento']
+                    next_due_date = False
+                    if index + 1 < len(group):
+                        next_due_date = group.iloc[index + 1]['Vencimento']
+                    message = create_message(name, due_date, next_due_date)
+                    payment = {
+                        'phone': row['Telefone'],
+                        'message': message
+                    }
                     send_payment_reminder(payment, method='print')
+                    self.last_messages[row['Nome']] = message
+            messagebox.showinfo("Sucesso", "Cobranças enviadas com sucesso!")
         else:
             messagebox.showwarning("Aviso", "Nenhum arquivo carregado.")
-
+            
 if __name__ == "__main__":
     root = tk.Tk()
     app = PaymentManagerApp(root)
