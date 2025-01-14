@@ -32,7 +32,7 @@ def create_message(name: str, due_date: datetime, next_due_date: datetime | bool
         message = (
             f"Olá {first_name},\n"
             f"Consta um boleto em seu nome vencido em {due_date.strftime('%d/%m/%Y')}.\n"
-            "Procure pagar em dia e evite juros e multa desnecessários.\n"
+            "Procure pagar em dia e evite juros e multas desnecessários.\n"
             "Studio R Formaturas"
         )
     
