@@ -31,7 +31,7 @@ def create_message(name: str, due_date: datetime, next_due_date: datetime | bool
     elif due_date < today <= due_date + timedelta(days=20):
         message = (
             f"Olá {first_name},\n"
-            f"Consta um boleto em seu nome com vencimento para {due_date.strftime('%d/%m/%Y')}.\n"
+            f"Consta um boleto em seu nome vencido em {due_date.strftime('%d/%m/%Y')}.\n"
             "Procure pagar em dia e evite juros e multa desnecessários.\n"
             "Studio R Formaturas"
         )
