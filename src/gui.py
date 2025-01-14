@@ -91,6 +91,7 @@ class PaymentManagerApp:
             filtered_df = self.df[self.df['Status'] == 'N']
             grouped = filtered_df.groupby('Nome')
             
+            payments = []
             for name, group in grouped:
                 group = group.reset_index(drop=True)
                 for index, row in group.iterrows():
@@ -100,12 +101,13 @@ class PaymentManagerApp:
                         next_due_date = group.iloc[index + 1]['Vencimento']
                     message = create_message(name, due_date, next_due_date)
                     payment = {
-                        'phone': row['Telefone'],
+                        'phone': str(row['Telefone']),
                         'message': message
                     }
                     if message and (name not in self.last_messages or self.last_messages[name] != message):
-                        send_payment_reminder(payment, method='print')
+                        payments.append(payment)
                         self.last_messages[name] = message
+            send_payment_reminder(payments, method='pywhatkit')
             messagebox.showinfo("Sucesso", "Cobranças enviadas com sucesso!")
         else:
             messagebox.showwarning("Aviso", "Nenhum arquivo carregado.")

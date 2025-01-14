@@ -1,83 +1,65 @@
 import pywhatkit as kit
+from datetime import datetime, timedelta
 from time import sleep
 import webbrowser
 import time
 
-def send_payment_reminder(payment: dict, method: str = 'pywhatkit') -> None:
-    """
-    Send a payment reminder using the specified method.
-
-    Args:
-        payment (dict): A dictionary containing the phone number and message.
-        method (str): The method to use for sending the reminder ('pywhatkit', 'selenium', 'wa_link', or 'print').
-    """
+def send_payment_reminder(payments: list, method: str='pywhatkit'):
     if method == 'pywhatkit':
         open_whatsapp_web()
     
-    phone = payment['phone']
-    message = payment['message']
+    for payment in payments:
+        message = payment['message']
+        phone = payment['phone']
+        if len(phone) <= 11:
+            phone = "+55" + phone
 
-    if method == 'pywhatkit':
-        send_with_pywhatkit(phone, message)
-    elif method == 'selenium':
-        send_with_selenium(phone, message)
-    elif method == 'wa_link':
-        send_with_wa_link(phone, message)
-    elif method == 'print':
-        print_message(phone, message)
+        if message:
+            if method == 'pywhatkit':
+                send_with_pywhatkit(phone, message)
+            elif method == 'selenium':
+                send_with_selenium(phone, message)
+            elif method == 'wa_link':
+                send_with_wa_link(phone, message)
+            elif method == 'print':
+                print_message(phone, message)
 
 def open_whatsapp_web():
-    """
-    Open WhatsApp Web in the default web browser.
-    """
     webbrowser.open("https://web.whatsapp.com")
-    time.sleep(60)
+    time.sleep(45)
 
 def send_with_pywhatkit(phone, message):
-    """
-    Send a WhatsApp message using pywhatkit.
-
-    Args:
-        phone (str): The phone number to send the message to.
-        message (str): The message to send.
-    """
     kit.sendwhatmsg_instantly(phone, message, wait_time=10, tab_close=True)
 
 def send_with_selenium(phone, message):
-    """
-    Send a WhatsApp message using Selenium.
-
-    Args:
-        phone (str): The phone number to send the message to.
-        message (str): The message to send.
-    """
     pass
 
 def send_with_wa_link(phone, message):
-    """
-    Send a WhatsApp message using a wa.me link.
-
-    Args:
-        phone (str): The phone number to send the message to.
-        message (str): The message to send.
-    """
     pass
 
 def print_message(phone, message):
-    """
-    Print the message to the console.
-
-    Args:
-        phone (str): The phone number to send the message to.
-        message (str): The message to send.
-    """
-    print("\n")
-    print(f"Phone: {str(phone)}")
+    print(f"Phone: {phone}")
     print(f"Message: {message}")
 
 if __name__ == "__main__":
-    payments = {
-        'phone': '0000000000',
-        'message': 'A message'
-    }
+    payments = [
+        {
+            'client_name': 'John Doe',
+            'client_phone': '44998385898',
+            'amount': '100.00',
+            'due_date': '2024-12-29'
+        },
+        {
+            'client_name': 'Jane Smith',
+            'client_phone': '44998385898',
+            'amount': '100.00',
+            'due_date': '2025-01-04'
+        },
+        {
+            'client_name': 'Alice Johnson',
+            'client_phone': '44998385898',
+            'amount': '100.00',
+            'due_date': '2025-01-05'
+        }
+    ]
     send_payment_reminder(payments)
