@@ -1,6 +1,17 @@
 from datetime import datetime, timedelta
 
 def create_message(name: str, due_date: datetime, next_due_date: datetime | bool) -> str:
+    """
+    Creates a payment reminder message based on the due date and next due date.
+
+    Args:
+        name (str): The name of the person.
+        due_date (datetime): The due date of the payment.
+        next_due_date (datetime | bool): The next due date of the payment or False if there is no next due date.
+
+    Returns:
+        str: The payment reminder message.
+    """
     today = datetime.today()
     message = ""
     first_name = name.split()[0]
@@ -28,8 +39,10 @@ def create_message(name: str, due_date: datetime, next_due_date: datetime | bool
     elif due_date + timedelta(days=31) < today and not (isinstance(next_due_date, datetime) and today > next_due_date):
         message = (
             f"Olá {first_name},\n"
-            f"Você tem um boleto que está vencido há mais de 31 dias.\n"
-            "Evite transtornos futuros. Entre em contato para regularização ou renegociação.\n"
+            "Consta vencido o último boleto de sua compra.\n"
+            "Informamos que após o 30° dia o seu nome será incluído automaticamente no SERASA/SPC.\n"
+            "Evite transtornos!!!\n"
+            "Entre em contato para regularização ou renegociação amigável.\n"
             "Studio R Formaturas"
         )
     

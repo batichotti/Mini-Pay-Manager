@@ -8,7 +8,17 @@ from datetime import datetime
 #pip install openpyxl
 
 class PaymentManagerApp:
+    """
+    A class to represent the payment manager application.
+    """
+
     def __init__(self, root):
+        """
+        Initialize the PaymentManagerApp.
+
+        Args:
+            root: The root window of the Tkinter application.
+        """
         self.root = root
         self.df = None
         self.file_path_var = tk.StringVar()
@@ -17,6 +27,9 @@ class PaymentManagerApp:
         self.setup_ui()
 
     def setup_ui(self):
+        """
+        Set up the user interface of the application.
+        """
         self.root.title(cfg.WINDOW_TITLE)
         self.root.configure(bg=cfg.BG_COLOR)
         self.root.geometry(cfg.WINDOW_SIZE)
@@ -35,9 +48,18 @@ class PaymentManagerApp:
         send_button.pack(pady=cfg.PADY)
 
     def focus_on_end(self, event):
+        """
+        Set the cursor to the end of the file path entry.
+
+        Args:
+            event: The event that triggered the function.
+        """
         self.file_path_entry.icursor(tk.END)
 
     def load_excel_file(self) -> None:
+        """
+        Load an Excel file and validate its contents.
+        """
         file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx;*.xls;*.xlsm;*.xlsb;*.csv")])
         if file_path:
             try:
@@ -60,6 +82,9 @@ class PaymentManagerApp:
             messagebox.showwarning("Aviso", "Nenhum arquivo selecionado.")
 
     def send_charges(self) -> None:
+        """
+        Send payment reminders based on the loaded Excel file.
+        """
         if self.df is not None:
             self.df['Vencimento'] = pd.to_datetime(self.df['Vencimento'], format='%d/%m/%Y')
             self.df = self.df.sort_values(by='Vencimento')
@@ -78,9 +103,9 @@ class PaymentManagerApp:
                         'phone': row['Telefone'],
                         'message': message
                     }
-                    if message:
+                    if message and (name not in self.last_messages or self.last_messages[name] != message):
                         send_payment_reminder(payment, method='print')
-                    self.last_messages[row['Nome']] = message
+                        self.last_messages[name] = message
             messagebox.showinfo("Sucesso", "Cobranças enviadas com sucesso!")
         else:
             messagebox.showwarning("Aviso", "Nenhum arquivo carregado.")
