@@ -26,10 +26,10 @@ def send_payment_reminder(payments: list, method: str='pywhatkit'):
 
 def open_whatsapp_web():
     webbrowser.open("https://web.whatsapp.com")
-    time.sleep(45)
+    time.sleep(15)
 
 def send_with_pywhatkit(phone, message):
-    kit.sendwhatmsg_instantly(phone, message, wait_time=10, tab_close=True)
+    kit.sendwhatmsg_instantly(phone, message, wait_time=15, tab_close=True)
 
 def send_with_selenium(phone, message):
     pass
