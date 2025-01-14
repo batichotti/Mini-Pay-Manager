@@ -15,6 +15,7 @@ Mini-Pay-Manager is a Python application designed to help manage and send paymen
   - `tkinter`
   - `pandas`
   - `openpyxl`
+  - `pyinstaller`
 
 ## Installation
 1. Clone the repository:
@@ -23,17 +24,33 @@ Mini-Pay-Manager is a Python application designed to help manage and send paymen
     ```
 2. Navigate to the project directory:
     ```sh
-    cd Mini-Pay-Manager/src
+    cd Mini-Pay-Manager
     ```
 3. Install the required packages:
     ```sh
-    pip install pywhatkit pandas openpyxl
+    pip install -r requirements.txt
     ```
+
+## Setup
+
+To create an executable for the Mini-Pay-Manager, follow these steps:
+
+1. Ensure you have `pyinstaller` installed. If not, install it using:
+    ```sh
+    pip install pyinstaller
+    ```
+
+2. Run the `setup.py` script to generate the executable:
+    ```sh
+    python setup.py
+    ```
+
+3. The executable will be created in the `dist` directory.
 
 ## Usage
 1. Run the application:
     ```sh
-    python gui.py
+    python src/gui.py
     ```
 2. Use the GUI to load an Excel file containing payment data.
 3. Click "Enviar Cobranças" to send payment reminders.

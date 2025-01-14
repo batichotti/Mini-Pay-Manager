@@ -1,0 +1,5 @@
+pywhatkit
+tkinter
+pandas
+openpyxl
+pyinstaller

@@ -65,7 +65,9 @@ class PaymentManagerApp:
             self.df = self.df.sort_values(by='Vencimento')
             filtered_df = self.df[self.df['Status'] == 'N']
             grouped = filtered_df.groupby('Nome')
+            
             for name, group in grouped:
+                group = group.reset_index(drop=True)
                 for index, row in group.iterrows():
                     due_date = row['Vencimento']
                     next_due_date = False
@@ -76,11 +78,13 @@ class PaymentManagerApp:
                         'phone': row['Telefone'],
                         'message': message
                     }
-                    send_payment_reminder(payment, method='print')
+                    if message:
+                        send_payment_reminder(payment, method='print')
                     self.last_messages[row['Nome']] = message
             messagebox.showinfo("Sucesso", "Cobranças enviadas com sucesso!")
         else:
             messagebox.showwarning("Aviso", "Nenhum arquivo carregado.")
+
             
 if __name__ == "__main__":
     root = tk.Tk()
