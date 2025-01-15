@@ -37,7 +37,7 @@ def create_message(name: str, due_date: datetime, next_due_date: datetime | bool
         )
     
     # Caso 3: Boleto vencido há mais de 31 dias (sem outros boletos vencidos)
-    elif due_date + timedelta(days=31) < today and not (isinstance(next_due_date, datetime) and today > next_due_date):
+    elif due_date + timedelta(days=31) < today and (not isinstance(next_due_date, datetime) or today <= next_due_date):
         message = (
             f"Olá {first_name},\n"
             "Consta vencido o último boleto de sua compra.\n"
